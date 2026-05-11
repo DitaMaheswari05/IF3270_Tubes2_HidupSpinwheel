@@ -288,3 +288,46 @@ class Flatten(Layer):
             x = x[np.newaxis]
         out = x.reshape(x.shape[0], -1)
         return out[0] if single else out
+
+class Embedding(Layer):
+    def __init__(self, vocab_size: int = None, embed_dim: int = None):
+        self.W = None
+    
+    def load_weights_from_keras(self, keras_layer):
+        self.W = keras_layer.get_weights().astype(np.float32)
+
+    def forward(self, x: np.ndarray) -> np.ndarray:
+        return self.W[x]
+
+class SimpleRNNCell(Layer):
+    def __init__(self, units: int = None):
+        self.units = units
+        self.W, self.U, self.b = None, None, None
+
+    def load_weights_from_keras(self, keras_layer):
+        weights = keras_layer.get_weights()
+        self.W, self.U, self.b = weights, weights[1], weights[2]
+
+    def forward(self, x_t: np.ndarray, h_prev: np.ndarray) -> np.ndarray:
+        z = x_t @ self.W + h_prev @ self.U + self.b
+        return tanh(z)
+
+class LSTMCell(Layer):
+    def __init__(self, units: int = None):
+        self.units = units
+        self.W, self.U, self.b = None, None, None
+
+    def load_weights_from_keras(self, keras_layer):
+        weights = keras_layer.get_weights()
+        self.W, self.U, self.b = weights, weights[1], weights[2]
+
+    def forward(self, x_t: np.ndarray, h_prev: np.ndarray, c_prev: np.ndarray):
+        z = x_t @ self.W + h_prev @ self.U + self.b
+        z_i, z_f, z_c, z_o = np.split(z, 4, axis=-1)
+        
+        i, f, o = sigmoid(z_i), sigmoid(z_f), sigmoid(z_o)
+        c_tilde = tanh(z_c)
+        
+        c_next = f * c_prev + i * c_tilde
+        h_next = o * tanh(c_next)
+        return h_next, c_next
