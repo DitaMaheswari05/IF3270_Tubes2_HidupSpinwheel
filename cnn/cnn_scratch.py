@@ -1,6 +1,6 @@
 import numpy as np
 
-from layers import (
+from cnn.layers import (
     Conv2D,
     LocallyConnected2D,
     MaxPooling2D,
