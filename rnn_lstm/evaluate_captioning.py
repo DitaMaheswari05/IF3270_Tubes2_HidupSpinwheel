@@ -9,7 +9,7 @@ from nltk.translate.bleu_score import corpus_bleu, SmoothingFunction
 from nltk.translate.meteor_score import meteor_score
 import nltk
 from collections import defaultdict
-from train_captioning import generate_caption_greedy
+from rnn_lstm.train_captioning import generate_caption_greedy
 
 
 def _ensure_nltk():

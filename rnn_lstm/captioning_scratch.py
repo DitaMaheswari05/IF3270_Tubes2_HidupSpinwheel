@@ -1,6 +1,6 @@
 import time
 import numpy as np
-from rnn_layers import Embedding, Dense, SimpleRNNCell, LSTMCell, softmax, ACTIVATIONS
+from rnn_lstm.rnn_layers import Embedding, Dense, SimpleRNNCell, LSTMCell, softmax, ACTIVATIONS
 from nltk.translate.bleu_score import corpus_bleu, SmoothingFunction
 
 
